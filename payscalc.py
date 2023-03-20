@@ -22,28 +22,43 @@ totalHSum = 0 # total from all header summs of all files
 totalLSum = 0 # total calculated from all lines in all files
 agent_collector = []
 #loop files
-print('*\nprocess files')
+print('* * * \nprocess files:\n')
 for filename in os.listdir(f / '..'):
+    csvreader = None
     print(filename)
     agent_collector += [[filename]]
     mfile = open(paydir / filename)
-    csvreader = csv.reader(mfile, delimiter = ';')
-    xData = list(csvreader)
-    rSum = xData[1][0] #sum from file header
-    rSumDec = Decimal(rSum[1:]) #cut '#' symbol
-    print(rSumDec)
+    
+    
+    
     
     #agent
     
     if re.match('^[a-z]{3}',filename[0:3]):#filename[0:3] == 'tko':
+        csvreader = csv.reader(mfile, delimiter = ';')
+        xData = list(csvreader)
         agent_name = xData[7][0]
         if len(agent_name) < 3:
             agent_name = 'Болотное'
+        #summa header from file
+        rSum = xData[1][0] #sum from file header
+        rSumDec = Decimal(rSum[1:]) #cut '#' symbol
+        print(rSumDec)
     elif filename[0:1] == 'P':
-        agent_name = 'НЭС'
+        csvreader = csv.reader(mfile, delimiter = '|')
+        xData = list(csvreader)
+        #agent_name = 'НЭС'
+        agent_name = xData[len(xData)-1][5]
+        rSum = xData[1][0] #sum from file header
+        rSumDec = Decimal(rSum[1:]) #cut '#' symbol
+        print(rSumDec)
     elif filename[0:1] == '4':
+        csvreader = csv.reader(mfile, delimiter = ';')
+        xData = list(csvreader)
         agent_name = 'Сбербанк'
     else:
+        csvreader = csv.reader(mfile, delimiter = ';')
+        xData = list(csvreader)
         agent_name = xData[6][1]
         #get rid of any shit except Agent name
         agent_name = agent_name[agent_name.find("<")+1:agent_name.find(">")]
@@ -61,7 +76,13 @@ for filename in os.listdir(f / '..'):
         totalLSum += ttl
     elif agent_name == 'НЭС':
         for xline in xData[:len(xData)-1]:
-            ttl = ttl+Decimal(xline[3])
+            ttl = ttl + Decimal(xline[3])
+        print('total ' + str(ttl))
+        agent_collector[totalfies] += [ttl]
+        totalLSum += ttl
+    elif agent_name == 'Сбербанк':
+        for xline in xData[:len(xData)-2]:
+            ttl = ttl + Decimal(xline[9])
         print('total ' + str(ttl))
         agent_collector[totalfies] += [ttl]
         totalLSum += ttl
@@ -71,9 +92,10 @@ for filename in os.listdir(f / '..'):
         print('total ' + str(ttl))
         agent_collector[totalfies] += [ttl]
         totalLSum += ttl
-    print()
-    print('total sum: ' + str(totalLSum))    
+    print()  
     totalfies = totalfies + 1
+    
+print('total sum: ' + str(totalLSum))  
 print('\ntotal files:' + str(totalfies))
 print(agent_collector)
 #efile = open(f)
@@ -84,31 +106,4 @@ print(agent_collector)
 #result.write('lemon');
 #result.close()
 
-
-
-#csv practice
-agent_collectorx = []
-print()
-egorod = open(f)
-ttl = 0;
-exampleReader = csv.reader(egorod, delimiter = ';')
-eData = list(exampleReader)
-rSum = eData[1][0] #sum from file header
-rSumDec = Decimal(rSum[1:]) #cut '#' symbol
-agent_collector = agent_collectorx + [rSumDec]
-print (rSumDec)
-agent_name = eData[6][1]
-#get rid of any shit except Agent name
-
-agent_name = agent_name[agent_name.find("<")+1:agent_name.find(">")]
-agent_collectorx = agent_collectorx + [agent_name]
-for xline in eData[12:]:
-    ttl = ttl+Decimal(xline[3])
-print('total ' + str(ttl))
-agent_collectorx = agent_collectorx + [ttl]
-print(agent_collectorx)
-if rSumDec == ttl:
-    print('equal')
-else:
-    print('NOT equal')
     
