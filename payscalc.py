@@ -3,38 +3,34 @@
 
 from pathlib import Path
 from decimal import *
-#Path('spam') / 'bacon' / 'eggs'
-#Path('spam') / Path('bacon/eggs')
 import os
 import csv
 import re
-print (Path.cwd() / '13tail')
 
-f = Path.cwd() / '13tail' / 'E165616_224316665_141972_92.txt'
-paydir = Path.cwd() / '13tail'
-print (f.stem)
-print(f.suffix)
-print(f.parents[1])
+print ('Input directory name:')
+xDir = input()
+
+paydir = Path.cwd() / xDir
+#print (f.stem)
+#print(f.suffix)
+#print(f.parents[1])
 #print('get size of file: ' + str(os.path.getsize(f)))
-print(os.listdir(f / '..'))
+#print(os.listdir(f / '..'))
 totalfies = 0
 totalHSum = 0 # total from all header summs of all files
 totalLSum = 0 # total calculated from all lines in all files
 agent_collector = []
 #loop files
 print('* * * \nprocess files:\n')
-for filename in os.listdir(f / '..'):
+for filename in os.listdir(paydir):
     csvreader = None
     print(filename)
     agent_collector += [[filename]]
-    mfile = open(paydir / filename)
-    
-    
-    
+    mfile = open(paydir / filename) 
     
     #agent
     
-    if re.match('^[a-z]{3}',filename[0:3]):#filename[0:3] == 'tko':
+    if re.match('^[a-z]{3}',filename[0:3]): # bolotnoye and toguchin
         csvreader = csv.reader(mfile, delimiter = ';')
         xData = list(csvreader)
         agent_name = xData[7][0]
@@ -44,6 +40,7 @@ for filename in os.listdir(f / '..'):
         rSum = xData[1][0] #sum from file header
         rSumDec = Decimal(rSum[1:]) #cut '#' symbol
         print(rSumDec)
+        agent_collector[totalfies] += ['Болотное_Тогучин']
     elif filename[0:1] == 'P':
         csvreader = csv.reader(mfile, delimiter = '|')
         xData = list(csvreader)
@@ -52,16 +49,19 @@ for filename in os.listdir(f / '..'):
         rSum = xData[1][0] #sum from file header
         rSumDec = Decimal(rSum[1:]) #cut '#' symbol
         print(rSumDec)
+        agent_collector[totalfies] += ['НЭС']
     elif filename[0:1] == '4':
         csvreader = csv.reader(mfile, delimiter = ';')
         xData = list(csvreader)
         agent_name = 'Сбербанк'
+        agent_collector[totalfies] += ['Сбербанк']
     else:
         csvreader = csv.reader(mfile, delimiter = ';')
         xData = list(csvreader)
         agent_name = xData[6][1]
         #get rid of any shit except Agent name
         agent_name = agent_name[agent_name.find("<")+1:agent_name.find(">")]
+        agent_collector[totalfies] += ['Город']
     print(agent_name)
     agent_collector[totalfies] += [agent_name]
     
