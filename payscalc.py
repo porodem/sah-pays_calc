@@ -98,6 +98,13 @@ for filename in os.listdir(paydir):
 print('total sum: ' + str(totalLSum))  
 print('\ntotal files:' + str(totalfies))
 print(agent_collector)
+
+#write CSV file result
+outputFile = open(str(paydir) + '\\' + xDir + '_result.csv','w',newline='')
+outputWriter = csv.writer(outputFile, delimiter = ';')
+outputWriter.writerows(agent_collector)
+outputFile.close()
+
 #efile = open(f)
 #eContent = efile.read()
 #print('printing:')
