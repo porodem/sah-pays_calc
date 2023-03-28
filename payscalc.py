@@ -29,8 +29,10 @@ for filename in os.listdir(paydir):
     mfile = open(paydir / filename) 
     
     #agent
+    print(filename[0:1])
     
     if re.match('^[a-z]{3}',filename[0:3]): # bolotnoye and toguchin
+        paysystem = 'Болотное_Тогучин'
         csvreader = csv.reader(mfile, delimiter = ';')
         xData = list(csvreader)
         agent_name = xData[7][0]
@@ -40,33 +42,36 @@ for filename in os.listdir(paydir):
         rSum = xData[1][0] #sum from file header
         rSumDec = Decimal(rSum[1:]) #cut '#' symbol
         print(rSumDec)
-        agent_collector[totalfies] += ['Болотное_Тогучин']
+        agent_collector[totalfies] += [paysystem]
     elif filename[0:1] == 'P':
+        paysystem = 'НЭС'
         csvreader = csv.reader(mfile, delimiter = '|')
         xData = list(csvreader)
         #agent_name = 'НЭС'
         agent_name = xData[len(xData)-1][5]
-        rSum = xData[1][0] #sum from file header
-        rSumDec = Decimal(rSum[1:]) #cut '#' symbol
-        print(rSumDec)
-        agent_collector[totalfies] += ['НЭС']
+        rSum = xData[len(xData)-1][2] #sum from file header
+        rSumDec = Decimal(rSum)
+        print('hSum:' + str(rSumDec))
+        agent_collector[totalfies] += [paysystem]
     elif filename[0:1] == '4':
+        paysystem = 'Сбербанк'
         csvreader = csv.reader(mfile, delimiter = ';')
         xData = list(csvreader)
         agent_name = 'Сбербанк'
-        agent_collector[totalfies] += ['Сбербанк']
+        agent_collector[totalfies] += [paysystem]
     else:
+        paysystem = 'Город'
         csvreader = csv.reader(mfile, delimiter = ';')
         xData = list(csvreader)
         agent_name = xData[6][1]
         #get rid of any shit except Agent name
         agent_name = agent_name[agent_name.find("<")+1:agent_name.find(">")]
-        agent_collector[totalfies] += ['Город']
+        agent_collector[totalfies] += [paysystem]
     print(agent_name)
     agent_collector[totalfies] += [agent_name]
     
     #sum all lines in current file
-    
+    #DEBUH
     ttl = 0
     if filename[0:3] == 'tko' or filename[0:3] == 'tog':
         for xline in xData[8:]: # bolotnoye header ends at 8 line
@@ -74,13 +79,13 @@ for filename in os.listdir(paydir):
         print('total ' + str(ttl))
         agent_collector[totalfies] += [ttl]
         totalLSum += ttl
-    elif agent_name == 'НЭС':
+    elif paysystem == 'НЭС':
         for xline in xData[:len(xData)-1]:
             ttl = ttl + Decimal(xline[3])
         print('total ' + str(ttl))
         agent_collector[totalfies] += [ttl]
         totalLSum += ttl
-    elif agent_name == 'Сбербанк':
+    elif paysystem == 'Сбербанк':
         for xline in xData[:len(xData)-2]:
             ttl = ttl + Decimal(xline[9])
         print('total ' + str(ttl))
