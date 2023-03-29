@@ -1,5 +1,6 @@
 #where to save all files
 #work_dir = "C:\\Python\\Python310\\Scripts\\ecopays\\13tail"
+#25.03.23 save result in new folder and calc over multiple directory
 
 from pathlib import Path
 from decimal import *
@@ -105,7 +106,10 @@ print('\ntotal files:' + str(totalfies))
 print(agent_collector)
 
 #write CSV file result
-outputFile = open(str(paydir) + '\\' + xDir + '_result.csv','w',newline='')
+outputDir = Path.cwd() / 'result'
+os.mkdir(outputDir)
+outputFile = open(str(outputDir) + '/' + xDir + '_result.csv','w',newline='')
+#outputFile = open(str(paydir) + '\\' + xDir + '_result.csv','w',newline='')
 outputWriter = csv.writer(outputFile, delimiter = ';')
 outputWriter.writerows(agent_collector)
 outputFile.close()
