@@ -107,19 +107,16 @@ print(agent_collector)
 
 #write CSV file result
 outputDir = Path.cwd() / 'result'
-os.mkdir(outputDir)
+if not outputDir.exists():
+    os.mkdir(outputDir)
+
 outputFile = open(str(outputDir) + '/' + xDir + '_result.csv','w',newline='')
 #outputFile = open(str(paydir) + '\\' + xDir + '_result.csv','w',newline='')
 outputWriter = csv.writer(outputFile, delimiter = ';')
 outputWriter.writerows(agent_collector)
 outputFile.close()
 
-#efile = open(f)
-#eContent = efile.read()
-#print('printing:')
-#print(eContent)
-#result = open('result2.txt', 'w')
-#result.write('lemon');
-#result.close()
+print('\n- - complete - -')
+print('результат сохранен в папку result')
 
     
