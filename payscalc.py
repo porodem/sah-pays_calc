@@ -20,6 +20,10 @@ paydir = Path.cwd() / xDir
 totalfies = 0
 totalHSum = 0 # total from all header summs of all files
 totalLSum = 0 # total calculated from all lines in all files
+
+# for fast overall payagents result show on end
+ttl_short = {'НЭС':0,'Город':0,'Болотное_Тогучин':0,'Сбер':0}
+
 agent_collector = []
 #loop files
 print('* * * \nprocess files:\n')
@@ -80,28 +84,32 @@ for filename in os.listdir(paydir):
         print('total ' + str(ttl))
         agent_collector[totalfies] += [ttl]
         totalLSum += ttl
+        ttl_short['Болотное_Тогучин']+= ttl
     elif paysystem == 'НЭС':
         for xline in xData[:len(xData)-1]:
             ttl = ttl + Decimal(xline[3])
         print('total ' + str(ttl))
         agent_collector[totalfies] += [ttl]
         totalLSum += ttl
+        ttl_short['НЭС']+= ttl
     elif paysystem == 'Сбербанк':
         for xline in xData[:len(xData)-2]:
             ttl = ttl + Decimal(xline[9])
         print('total ' + str(ttl))
         agent_collector[totalfies] += [ttl]
         totalLSum += ttl
+        ttl_short['Сбер']+= ttl
     else:
         for xline in xData[12:]: # Gorod System header ends at 12 line number
             ttl = ttl+Decimal(xline[3])
         print('total ' + str(ttl))
         agent_collector[totalfies] += [ttl]
         totalLSum += ttl
+        ttl_short['Город']+= ttl
     print()  
     totalfies = totalfies + 1
     
-print('total sum: ' + str(totalLSum))  
+ 
 print('\ntotal files:' + str(totalfies))
 print(agent_collector)
 
@@ -116,7 +124,15 @@ outputWriter = csv.writer(outputFile, delimiter = ';')
 outputWriter.writerows(agent_collector)
 outputFile.close()
 
-print('\n- - complete - -')
-print('результат сохранен в папку result')
+print('\n  Платежи по реестрам за: ' + xDir + '\n')
+for k,v in ttl_short.items():
+    if len(k) > 6:
+        print(k + ':\t' + str(v))
+    else:
+        print(k + ':\t\t\t' + str(v))
+    
+print('- - - - - - - - - \n\t\tИТОГО: \t' + str(totalLSum)) 
+    
+print('\nрезультат сохранен в папку result')
 
     
