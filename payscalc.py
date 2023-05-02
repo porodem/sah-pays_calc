@@ -22,7 +22,7 @@ totalHSum = 0 # total from all header summs of all files
 totalLSum = 0 # total calculated from all lines in all files
 
 # for fast overall payagents result show on end
-ttl_short = {'НЭС':0,'Город':0,'Болотное_Тогучин':0,'Сбер':0}
+ttl_short = {'НЭС':0,'Город':0,'Болотное_Тогучин':0,'Сбер':0,'ГПБ':0}
 
 agent_collector = []
 #loop files
@@ -64,6 +64,12 @@ for filename in os.listdir(paydir):
         xData = list(csvreader)
         agent_name = 'Сбербанк'
         agent_collector[totalfies] += [paysystem]
+    elif filename[0:3] == 'Rep': #for Gazprombank files like Report 01.05.2023.txt
+        paysystem = 'Газпром'
+        agent_name = 'Газпром'
+        csvreader = csv.reader(mfile, delimiter = '|')
+        xData = list(csvreader)
+        agent_collector[totalfies] += [paysystem]
     else:
         paysystem = 'Город'
         csvreader = csv.reader(mfile, delimiter = ';')
@@ -99,6 +105,13 @@ for filename in os.listdir(paydir):
         agent_collector[totalfies] += [ttl]
         totalLSum += ttl
         ttl_short['Сбер']+= ttl
+    elif paysystem == 'Газпром':
+        for xline in xData[4:len(xData)-2]:
+            ttl = ttl + Decimal(xline[4])
+        print('total GPB ' + str(ttl))
+        agent_collector[totalfies] += [ttl]
+        totalLSum += ttl
+        ttl_short['ГПБ'] += ttl
     else:
         for xline in xData[12:]: # Gorod System header ends at 12 line number
             ttl = ttl+Decimal(xline[3])
