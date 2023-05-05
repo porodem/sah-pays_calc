@@ -64,7 +64,7 @@ for filename in os.listdir(paydir):
         xData = list(csvreader)
         agent_name = 'Сбербанк'
         agent_collector[totalfies] += [paysystem]
-    elif filename[0:3] == 'Rep': #for Gazprombank files like Report 01.05.2023.txt
+	elif filename[0:3] == 'Rep': #for Gazprombank files like Report 01.05.2023.txt
         paysystem = 'Газпром'
         agent_name = 'Газпром'
         csvreader = csv.reader(mfile, delimiter = '|')
@@ -84,7 +84,7 @@ for filename in os.listdir(paydir):
     #sum all lines in current file
     #DEBUH
     ttl = 0
-    if filename[0:3] == 'tko' or filename[0:3] == 'tog':
+    if paysystem == 'Болотное_Тогучин':
         for xline in xData[8:]: # bolotnoye header ends at 8 line
             ttl = ttl+Decimal(xline[4])
         print('total ' + str(ttl))
@@ -105,7 +105,7 @@ for filename in os.listdir(paydir):
         agent_collector[totalfies] += [ttl]
         totalLSum += ttl
         ttl_short['Сбер']+= ttl
-    elif paysystem == 'Газпром':
+	elif paysystem == 'Газпром':
         for xline in xData[4:len(xData)-2]:
             ttl = ttl + Decimal(xline[4])
         print('total GPB ' + str(ttl))
